@@ -16,7 +16,7 @@
     <div class="container-fluid">
       <div class="row">
 
-        <div class="col-md-2 offset-md-1 white-shadow-box col-sm-12" align="center">
+        <div class="col-md-2 offset-md-1 white-shadow-box col-xs-12" align="center">
           <iframe width="90%"
           src="https://www.youtube.com/embed/g9c2WTCj0Pk?autoplay=1"
           frameborder="0"
@@ -27,7 +27,7 @@
         <div style="margin-left: 10px;" class="col-md-6 white-shadow-box col-sm-12">
           <h3> Due Diligence Dashboard </h3>
           <p> Simply add the name of the startup in the text fields and click on the checkbox to add it or remove it from the table. The table will
-            auto update with the links for each startup. The + and x buttons will create or remove more text boxes. Also feel free to use the youtube
+            auto update with the links for each startup. The + and x buttons will create or remove more text boxes. Hit the compare button to see the diffrent startups in Google Trends and also update the URL to a shareable one. Also feel free to use the youtube
             video to the left to create a calming mood :) Author: Jean Turban jt665@cornell.edu
         </div>
       </div>
@@ -52,18 +52,18 @@
 
           <div id="adddrop">
             <div class="square-button">
-
                 <button onclick="duplicateRadioTextBlock()" style="float: left;" type="button" class="btn btn-primary">+</button>
                 <button onclick="deleteLastTextBlock()" style="float: left;" type="button" class="btn btn-danger">x</button>
 
             </div>
-          </div>
+            <button onclick="compareTrends(this)" style="float: right;color: #1c1c1c;" type="button" class="btn btn-warning"><b>Compare</b></button>
 
+          </div>
 
 
         </div>
 
-        <div style="margin-left: 10px;" class="col-md-8  white-shadow-box col-sm-12">
+        <div style="margin-left: 10px;" class="col-md-6  table-responsive white-shadow-box col-sm-12">
           <table class="table table-striped" id="main-table">
             <thead>
               <tr>
