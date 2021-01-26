@@ -6,7 +6,7 @@ from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk
 import functions as fs
 
 def analyze(event):
-
+ 
     count = 0
     for key in inputmapping:
         inputmapping[key] = float(entries[count].get())
