@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="eng">
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="CSS/report.css">
+
+	  <link rel="stylesheet" href="https://uicdn.toast.com/tui.chart/latest/tui-chart.min.css">
+    <script type='text/javascript' src='https://uicdn.toast.com/tui.chart/latest/raphael.js'></script>
+    <script src="https://uicdn.toast.com/tui.chart/latest/tui-chart-all.js"></script>
+</head>
+<body>
+
+<div id="root">
+
+	<div class="chart-area" id="chart-01"></div>
+
+
+	<div class="chart-area" id="chart-02"></div>
+
+
+  <div class="chart-area" id="chart-03"></div>
+
+	<div class="chart-area" id="chart-bullet"></div>
+
+
+	<div class="chart-area" id="chart-04"></div>
+
+	<div class="chart-area" id="chart-05"></div>
+
+  <div class="chart-area" id="chart-06"></div>
+
+
+  <div class="chart-area" id="chart-heatmap"></div>
+
+
+  <script src="js/othercir.js"></script>
+</div>
+
+
+<script>
+
+var container = document.getElementById('chart-01');
+var data = {
+    categories: ['Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct'],
+    series: {
+        column: [
+            {
+                name: 'Seoul',
+                data: [11.3, 17.0, 21.0, 24.4, 25.2, 20.4, 13.9]
+            }
+        ],
+        line: [
+            {
+                name: 'Average',
+                data: [11, 15.1, 17.8, 19.7, 19.5, 16.5, 12.3]
+            }
+        ]
+    }
+};
+var options = {
+    chart: {
+        width: 1160,
+        height: 540,
+        title: '24-hr Average Temperature'
+    },
+    yAxis: [{
+       title: 'Temperature (Celsius)',
+       chartType: 'column',
+       labelMargin: 15
+    }, {
+       title: 'Average',
+       chartType: 'line',
+       labelMargin: 15
+    }],
+    xAxis: {
+        title: 'Month'
+    },
+    series: {
+        line: {
+            showDot: true
+        }
+    },
+    tooltip: {
+        grouped: true,
+        suffix: '°C'
+    }
+};
+var theme = {
+    series: {
+        column: {
+            colors: [
+                '#83b14e', '#458a3f', '#295ba0', '#2a4175', '#289399'
+            ]
+        },
+        line: {
+            colors: ['#333']
+        }
+    }
+};
+// For apply theme
+// tui.chart.registerTheme('myTheme', theme);
+// options.theme = 'myTheme';
+var chart = tui.chart.comboChart(container, data, options);
+
+</script>
+<!-- 막대(세로)(그룹핑) -->
+<script>
+var container = document.getElementById('chart-02');
+var data = {
+    categories: ['June, 2015', 'July, 2015', 'August, 2015', 'September, 2015', 'October, 2015', 'November, 2015', 'December, 2015'],
+    series: [
+        {
+            name: 'Budget',
+            data: [5000, 3000, 5000, 7000, 6000, 4000, 1000]
+        },
+        {
+            name: 'Income',
+            data: [8000, 1000, 7000, 2000, 6000, 3000, 5000]
+        },
+        {
+            name: 'Expenses',
+            data: [4000, 4000, 6000, 3000, 4000, 5000, 7000]
+        },
+        {
+            name: 'Debt',
+            data: [6000, 3000, 3000, 1000, 2000, 4000, 3000]
+        }
+    ]
+};
+var options = {
+    chart: {
+        width: 1160,
+        height: 650,
+        title: 'Monthly Revenue',
+        format: '1,000'
+    },
+    yAxis: {
+        title: 'Amount',
+        min: 0,
+        max: 9000
+    },
+    xAxis: {
+        title: 'Month'
+    },
+    legend: {
+        align: 'top'
+    }
+};
+var theme = {
+    series: {
+        colors: [
+            '#83b14e', '#458a3f', '#295ba0', '#2a4175', '#289399',
+            '#289399', '#617178', '#8a9a9a', '#516f7d', '#dddddd'
+        ]
+    }
+};
+// For apply theme
+// tui.chart.registerTheme('myTheme', theme);
+// options.theme = 'myTheme';
+tui.chart.columnChart(container, data, options);
+</script>
+<!-- 막대(가로) -->
+<script>
+var container = document.getElementById('chart-03');
+var data = {
+    categories: ['June', 'July', 'Aug', 'Sep', 'Oct', 'Nov'],
+    series: [
+        {
+            name: 'Budget',
+            data: [5000, 3000, 5000, 7000, 6000, 4000],
+        },
+        {
+            name: 'Income',
+            data: [8000, 1000, 7000, 2000, 5000, 3000]
+        }
+    ]
+};
+var options = {
+    chart: {
+        width: 1160,
+        height: 650,
+        title: 'Monthly Revenue',
+        format: '1,000'
+    },
+    yAxis: {
+        title: 'Month'
+    },
+    xAxis: {
+        title: 'Amount',
+        min: 0,
+        max: 9000,
+        suffix: '$'
+    },
+     series: {
+         showLabel: true
+     }
+};
+var theme = {
+    series: {
+        colors: [
+            '#83b14e', '#458a3f', '#295ba0', '#2a4175', '#289399',
+            '#289399', '#617178', '#8a9a9a', '#516f7d', '#dddddd'
+        ]
+    }
+};
+
+// For apply theme
+
+// tui.chart.registerTheme('myTheme', theme);
+// options.theme = 'myTheme';
+
+tui.chart.barChart(container, data, options);
+</script>
+<!-- Bullet -->
+<script>
+var container = document.getElementById('chart-bullet');
+var data = {
+    categories: ['July', 'August'],
+    series: [{
+        name: '0~6세',
+        data: 25,
+        markers: [15],
+        ranges: [[0, 0], [0, 0], [0, 0]]
+    }, {
+        name: '7~19세',
+        data: 11,
+        markers: [10],
+        ranges: [[0, 0], [0, 0], [0, 0]]
+    }, {
+        name: '20~29세',
+        data: 30,
+        markers: [5],
+        ranges: [[0, 0], [0, 0], [0, 0]]
+    }, {
+        name: '30~39세',
+        data: 23,
+        markers: [15],
+        ranges: [[0, 0], [0, 0], [0, 0]]
+    }]
+};
+var options = {
+    chart: {
+        width: 1160,
+        height: 500,
+        title: 'Monthly Revenue',
+        format: '1,000'
+    },
+    legend: {
+        visible: false
+    },
+    xAxis: {
+        max: 35
+    },
+    series: {
+        showLabel: true,
+        vertical: false
+    }
+};
+/*
+var theme = {
+    series: {
+        ranges: [{ color: 'gray', opacity: 0.7 },
+            null,
+            { color: 'purple' }
+        ]
+    }
+};
+*/
+var theme = {
+    series: {
+        colors: [
+            'skyblue'
+        ],
+        markers: [{color: 'skyblue'}]
+    }
+};
+
+// For apply theme
+
+tui.chart.registerTheme('myTheme', theme);
+options.theme = 'myTheme';
+
+tui.chart.bulletChart(container, data, options);
+</script>
+<!-- 꺾은선(도트) -->
+<script>
+
+var container = document.getElementById('chart-04');
+var data = {
+    categories: ['01/01/2016', '02/01/2016', '03/01/2016', '04/01/2016', '05/01/2016', '06/01/2016', '07/01/2016', '08/01/2016', '09/01/2016', '10/01/2016', '11/01/2016', '12/01/2016'],
+    series: [
+        {
+            name: 'Seoul',
+            data: [-3.5, -1.1, 4.0, 11.3, 17.5, 21.5, 24.9, 25.2, 20.4, 13.9, 6.6, -0.6]
+        }
+    ]
+};
+var options = {
+    chart: {
+        width: 1160,
+        height: 540,
+        title: '24-hr Average Temperature'
+    },
+    yAxis: {
+        title: 'Temperature (Celsius)',
+    },
+    xAxis: {
+        title: 'Month',
+        pointOnColumn: true,
+        dateFormat: 'MMM',
+        tickInterval: 'auto'
+    },
+    series: {
+        showDot: false,
+        zoomable: true
+    },
+    tooltip: {
+        suffix: '°C'
+    },
+    plot: {
+        bands: [
+            {
+                range: ['03/01/2016', '05/01/2016'],
+                color: 'gray',
+                opacity: 0.2
+            }
+        ],
+        lines: [
+            {
+                value: '03/01/2016',
+                color: '#fa2828'
+            }
+        ]
+    }
+};
+var theme = {
+    series: {
+        colors: [
+            '#83b14e', '#458a3f', '#295ba0', '#2a4175', '#289399',
+            '#289399', '#617178', '#8a9a9a', '#516f7d', '#dddddd'
+        ]
+    }
+};
+// For apply theme
+// tui.chart.registerTheme('myTheme', theme);
+// options.theme = 'myTheme';
+var chart = tui.chart.lineChart(container, data, options);
+
+</script>
+<!-- 도넛 -->
+<script>
+var container = document.getElementById('chart-05');
+var data = {
+    categories: ['Browser'],
+    series: [
+        {
+            name: 'Chrome',
+            data: 46.02
+        },
+        {
+            name: 'IE',
+            data: 20.47
+        },
+        {
+            name: 'Firefox',
+            data: 17.71
+        },
+        {
+            name: 'Safari',
+            data: 5.45
+        },
+        {
+            name: 'Opera',
+            data: 3.10
+        },
+        {
+            name: 'Etc',
+            data: 7.25
+        }
+    ]
+};
+var options = {
+    chart: {
+        width: 700,
+        height: 700,
+        title: 'Usage share of web browsers',
+        format: function(value, chartType, areaType, valuetype, legendName) {
+            if (areaType === 'makingSeriesLabel') { // formatting at series area
+                value = value + '%';
+            }
+
+            return value;
+        }
+    },
+    series: {
+        radiusRange: ['40%', '100%'],
+        showLabel: true
+    },
+    tooltip: {
+        suffix: '%'
+    },
+    legend: {
+        align: 'bottom'
+    }
+};
+var theme = {
+    series: {
+        series: {
+            colors: [
+                '#83b14e', '#458a3f', '#295ba0', '#2a4175', '#289399',
+                '#289399', '#617178', '#8a9a9a', '#516f7d', '#dddddd'
+            ]
+        },
+        label: {
+            color: '#fff',
+            fontFamily: 'sans-serif'
+        }
+    }
+};
+
+// For apply theme
+
+tui.chart.registerTheme('myTheme', theme);
+options.theme = 'myTheme';
+
+tui.chart.pieChart(container, data, options);
+</script>
+<!-- 파이 -->
+<script>
+var container = document.getElementById('chart-06');
+var data = {
+    categories: ['Browser'],
+    series: [
+        {
+            name: 'Chrome',
+            data: 46.02
+        },
+        {
+            name: 'IE',
+            data: 20.47
+        },
+        {
+            name: 'Firefox',
+            data: 17.71
+        },
+        {
+            name: 'Safari',
+            data: 5.45
+        },
+        {
+            name: 'Opera',
+            data: 3.10
+        },
+        {
+            name: 'Etc',
+            data: 7.25
+        }
+    ]
+};
+var options = {
+    chart: {
+        width: 660,
+        height: 560,
+        title: 'Usage share of web browsers'
+    },
+    tooltip: {
+        suffix: '%'
+    }
+};
+var theme = {
+    series: {
+        colors: [
+            '#83b14e', '#458a3f', '#295ba0', '#2a4175', '#289399',
+            '#289399', '#617178', '#8a9a9a', '#516f7d', '#dddddd'
+        ]
+    }
+};
+
+// For apply theme
+
+// tui.chart.registerTheme('myTheme', theme);
+// options.theme = 'myTheme';
+
+tui.chart.pieChart(container, data, options);
+</script>
+<!-- 히트맵 -->
+<script>
+var container = document.getElementById('chart-heatmap');
+var data = {
+    categories: {
+        x: ['00~09', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21~24'],
+        y: ['일', '토', '금', '목', '수', '화', '월']
+    },
+    series: [
+        [50, 40, 30, 20, 10, 0, 10, 20, 30, 40, 50, 40, 30, 20],
+        [10, 0, 10, 20, 30, 40, 50, 40, 30, 20, 10, 0, 10, 20],
+        [10, 20, 30, 40, 50, 40, 30, 20, 50, 40, 30, 20, 10, 0],
+        [10, 0, 10, 20, 30, 40, 50, 40, 30, 20, 10, 0, 10, 20],
+        [50, 40, 30, 20, 10, 0, 10, 20, 30, 40, 50, 40, 30, 20],
+        [10, 0, 10, 20, 30, 40, 50, 40, 30, 20, 10, 0, 10, 20],
+        [50, 40, 30, 20, 10, 0, 10, 20, 30, 40, 50, 40, 30, 20]
+    ]
+};
+var options = {
+    chart: {
+        width: 1160,
+        height: 550,
+        title: '진료 집중/여유 구간'
+    },
+    yAxis: {
+        title: '요일'
+    },
+    xAxis: {
+        title: '시간'
+    },
+    series: {
+        showLabel: true
+    },
+    tooltip: {
+        suffix: '건'
+    }
+};
+var theme = {
+    series: {
+        startColor: '#ffffff',
+        endColor: '#1e4f7b'
+        //overColor: '#75b5aa',
+        //borderColor: '#F4511E'
+    }
+};
+
+// For apply theme
+
+tui.chart.registerTheme('myTheme', theme);
+options.theme = 'myTheme';
+
+tui.chart.heatmapChart(container, data, options);
+</script>
+</body>
+</html>
