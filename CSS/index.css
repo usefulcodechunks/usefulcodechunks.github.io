@@ -14,6 +14,7 @@ a:link ,a:visited {text-decoration: none;}
 
 
 .white-shadow-box {
+                  margin: 5px;
                   padding: 10px;
                   background-color: white;
                   border-radius: 10px;
