@@ -55,9 +55,9 @@ def render_node_app(render_object):
         nt.inherit_edge_colors(False)
         for ix in nt.get_edges():
             ix["width"] = ix["weight"]
-        nt.write_html('demo.html')
+        nt.write_html('NodeNetworkRender/demo.html')
         # print(nt)
         # display(HTML('demo.html'))
-        HtmlFile = open("demo.html", 'r', encoding='utf-8')
+        HtmlFile = open("NodeNetworkRender/demo.html", 'r', encoding='utf-8')
         source_code = HtmlFile.read()
         components.html(source_code, height=700)
