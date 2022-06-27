@@ -1,0 +1,4 @@
+
+*.pyc
+Streamlitapp/__pycache__/duedillgence.cpython-37.pyc
+Streamlitapp/__pycache__/nodeapp.cpython-37.pyc
