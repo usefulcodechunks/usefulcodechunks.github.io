@@ -1,42 +1,36 @@
 import streamlit as st
 import pandas as pd
 
-from nodeapp import render_node_app
-from duedillgence import due_dill_app
+# CONFIG IMPORTS
+from config import render_sidebar, default_home_view, initialize_session_state_vars
+
+# view imports
+from views.nodeapp import render_node_app
+from views.duedillgence import due_dill_app
 
 
 
+def list_of_pages_to_function():
+    pages = {}
+    pages["Home"] = default_home_view
+    pages["Node App"] = render_node_app
+    pages["Due Diligence"] = due_dill_app
+    st.session_state.pages_to_functions = pages
 
-def initialize_session_state_vars():
-    if 'cycle' not in st.session_state:
-        st.session_state.cycle = 0
-    if 'current_page' not in st.session_state:
-        st.session_state.current_page = "Home"
+def render_page(render_object):
+    try:
+        selected_page = render_object.session_state.current_page
+        render_object.title(selected_page)
+        function_to_call = render_object.session_state.pages_to_functions[selected_page]
+        function_to_call(render_object)
+    except KeyError:
+        render_object.error("No Page Found for {0}".format(render_object.session_state.current_page))
 
-
-
-
-
-def render_sidebar(sidebar_object):
-    with sidebar_object.expander("Page navigation"):
-        selected_page = st.selectbox('Select a page', ["Home", "Node App", "Due diligence"])
-        st.session_state.current_page = selected_page
-
-def render_page(main_page_object):
-
-    if(main_page_object.session_state.current_page == "Home"):
-        main_page_object.title(main_page_object.session_state.current_page)
-
-    elif(main_page_object.session_state.current_page == "Node App"):
-        main_page_object.title(main_page_object.session_state.current_page)
-        render_node_app(main_page_object)
-
-    elif(main_page_object.session_state.current_page == "Due diligence"):
-        main_page_object.title(main_page_object.session_state.current_page)
-        due_dill_app(main_page_object)
-
-    else:
-        main_page_object.title("404 No Page Found")
-
+# Intitilize the Session Variables Needed for the master app (set in config/__init__.py)
+initialize_session_state_vars()
+# Sets the pages to function call in session state
+list_of_pages_to_function()
+# Renders the needed sidebar controls for page navigation
 render_sidebar(st.sidebar)
+# Renders the selected page
 render_page(st)
