@@ -2,12 +2,12 @@ import streamlit as st
 import pandas as pd
 
 # CONFIG IMPORTS
-from config import render_sidebar, default_home_view, initialize_session_state_vars
+from config import render_sidebar, initialize_session_state_vars
 
 # view imports
 from views.nodeapp import render_node_app
 from views.duedillgence import due_dill_app
-
+from views.home import default_home_view
 
 
 def list_of_pages_to_function():
