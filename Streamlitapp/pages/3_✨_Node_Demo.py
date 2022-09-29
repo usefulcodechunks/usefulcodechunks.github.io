@@ -7,8 +7,12 @@ import random
 import streamlit as st
 import streamlit.components.v1 as components
 
-
-
+st.set_page_config(
+    page_title="Node Demo",
+    page_icon="✨",
+    layout="centered",
+    initial_sidebar_state="expanded",
+)
 
 def render_node_app(render_object):
     render_object.title("Demo Node App")
@@ -55,9 +59,11 @@ def render_node_app(render_object):
         nt.inherit_edge_colors(False)
         for ix in nt.get_edges():
             ix["width"] = ix["weight"]
-        nt.write_html('NodeNetworkRender/demo.html')
+        nt.write_html('HTMLfileoutputs/demo.html')
         # print(nt)
         # display(HTML('demo.html'))
-        HtmlFile = open("NodeNetworkRender/demo.html", 'r', encoding='utf-8')
+        HtmlFile = open("HTMLfileoutputs/demo.html", 'r', encoding='utf-8')
         source_code = HtmlFile.read()
         components.html(source_code, height=700)
+
+render_node_app(st)

@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 
-
 from helperfunctions.helperfunctions import (
     make_linkedin_link,
     make_crunchbase_link,
@@ -10,12 +9,14 @@ from helperfunctions.helperfunctions import (
     generate_random_emoji
     )
 
-
-
+st.set_page_config(
+    page_title="Due Diligence",
+    page_icon="🔎",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
 
 def due_dill_app(render_object):
-    query_params = render_object.experimental_get_query_params()
-    # render_object.write(query_params)
 
     def turn_dataframe_into_nice_table(df,target_container):
         num_of_cols = len(df.columns)
@@ -119,3 +120,7 @@ def due_dill_app(render_object):
 
     link = '[GitHub](http://github.com)'
     format_search_parameters_with_links(render_object.session_state.cache["search_parameters"])
+
+st.title("Due Diligence App")
+st.info("Use the sidebar controls to add the names of companies you wish to find on LinkedIn, Crunchbase and Google",icon="❓")
+due_dill_app(st)
