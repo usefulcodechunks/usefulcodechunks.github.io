@@ -33,7 +33,8 @@ def due_dill_app(render_object):
                 if("http" in str(row[column_titles[cell_i]])):
                     link = '['+column_titles[cell_i]+']('+row[column_titles[cell_i]]+')'
                     link = link.replace(" ","%20")
-                    subdivisions[cell_i].markdown(str(link), unsafe_allow_html=True)
+                    make_clickable(subdivisions[cell_i],row[column_titles[cell_i]],column_titles[cell_i])
+                    # subdivisions[cell_i].write(str(link))
                 else:
                     subdivisions[cell_i].write(row[column_titles[cell_i]])
 
@@ -60,7 +61,10 @@ def due_dill_app(render_object):
             display_string = str(n_i)+') '+generate_random_emoji(n_i) #FLAG
             render_object.session_state.cache["search_parameters"][n_i]["id"] = display_string
             with container.expander(display_string):
-                render_object.session_state.cache["search_parameters"][n_i]["input"] = render_object.text_input(display_string+"Input Search")
+                if(n_i == 0):
+                    render_object.session_state.cache["search_parameters"][n_i]["input"] = render_object.text_input(display_string+"Input Search",value="Streamlit")
+                else:
+                    render_object.session_state.cache["search_parameters"][n_i]["input"] = render_object.text_input(display_string+"Input Search")
 
     def initialize_session_state_vars_dueapp():
         if 'cycle' not in render_object.session_state:
