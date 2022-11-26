@@ -15,6 +15,9 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+is_mobile = st.checkbox("Check this box if you are using mobile")
+
+
 # TIE BREAKDER RULES
 # 1 - Goal goal_diffrential
 # 2 - Goals for
@@ -45,8 +48,9 @@ def get_first_two_seeds(df_of_data):
     df_of_data = df_of_data.sort_values(by=['goal_diffrential'], ascending=False)
     df_of_data = df_of_data.sort_values(by=['points'], ascending=False)
 
-    st.header("2 - Points Table")
-    st.write(df_of_data[["points", "goal_diffrential", "goals_for", "goals_against"]])
+    if(not is_mobile):
+        st.header("2 - Points Table")
+        st.write(df_of_data[["points", "goal_diffrential", "goals_for", "goals_against"]])
 
     final_two_seeds = df_of_data.index.values.tolist()[:2]
 
@@ -65,7 +69,10 @@ def game_pick_format(records_dict):
         unique_list_of_teams = []
         counter = 0
         st.header("1 - Game Simulation")
-        cols = st.columns([1,2,1,1,2,1])
+        if(is_mobile):
+            cols = st.columns(2)
+        else:
+            cols = st.columns([1,2,1,1,2,1])
 
         for index, row in temp_df.iterrows():
 
@@ -97,26 +104,52 @@ def game_pick_format(records_dict):
             else:
                 disable_bool = False
 
+            if(is_mobile):
+                sc1 = row["HomeTeam"]+" Wins"
+                sc2 = row["AwayTeam"]+" Wins"
+                sc3 = row["HomeTeam"]+" Ties With "+row["AwayTeam"]
 
-            with cols[0]:
-                get_image_for_country(row["HomeTeam"],st)
+                if(home_win_bool and away_win_bool):
+                    rendered_option = [sc3]
+                elif(home_win_bool):
+                    rendered_option = [sc1]
+                elif(away_win_bool):
+                    rendered_option = [sc2]
+                else:
+                    rendered_option = [sc1,sc2,sc3]
 
-            with cols[1]:
-                temp_home_result = st.checkbox(row["HomeTeam"],value=home_win_bool, disabled=disable_bool ,help=help_str, key=str(row["HomeTeam"])+str(row["MatchNumber"]))
 
-            with cols[2]:
-                if(disable_bool):
-                    st.write(int(row["HomeTeamScore"]))
+                temp_game_result = st.selectbox("Pick the games outcome",rendered_option,disabled=disable_bool)
+                if(temp_game_result == sc1):
+                    temp_home_result = True
+                    temp_away_result = False
+                elif(temp_game_result == sc2):
+                    temp_home_result = False
+                    temp_away_result = True
+                elif(temp_game_result == sc3):
+                    temp_home_result = True
+                    temp_away_result = True
 
-            with cols[3]:
-                if(disable_bool):
-                    st.write(int(row["AwayTeamScore"]))
+            else:
+                with cols[0]:
+                    get_image_for_country(row["HomeTeam"],st)
 
-            with cols[4]:
-                temp_away_result = st.checkbox(row["AwayTeam"],value=away_win_bool, disabled=disable_bool ,help=help_str, key=str(row["AwayTeam"])+str(row["MatchNumber"]))
+                with cols[1]:
+                    temp_home_result = st.checkbox(row["HomeTeam"],value=home_win_bool, disabled=disable_bool ,help=help_str, key=str(row["HomeTeam"])+str(row["MatchNumber"]))
 
-            with cols[5]:
-                get_image_for_country(row["AwayTeam"],st)
+                with cols[2]:
+                    if(disable_bool):
+                        st.write(int(row["HomeTeamScore"]))
+
+                with cols[3]:
+                    if(disable_bool):
+                        st.write(int(row["AwayTeamScore"]))
+
+                with cols[4]:
+                    temp_away_result = st.checkbox(row["AwayTeam"],value=away_win_bool, disabled=disable_bool ,help=help_str, key=str(row["AwayTeam"])+str(row["MatchNumber"]))
+
+                with cols[5]:
+                    get_image_for_country(row["AwayTeam"],st)
 
             if(disable_bool):
                 records_dict[row["AwayTeam"]]["goals_for"] += row["AwayTeamScore"]
@@ -140,20 +173,28 @@ def game_pick_format(records_dict):
         final_df_for_group = final_df_for_group[final_df_for_group.Group == selected_group]
         final_two_seeds = get_first_two_seeds(final_df_for_group)
 
-        st.header("3 - Final Results")
-        st.subheader("🥇 First Seed ")
-        cols = st.columns(6)
-        with cols[0]:
-            get_image_for_country(final_two_seeds[0],st)
-        with cols[1]:
+        if(is_mobile):
+            st.header("2 - Final Results")
+            st.subheader("🥇 First Seed ")
             st.write(final_two_seeds[0])
-
-        st.subheader("🥈 Second Seed ")
-        cols = st.columns(6)
-        with cols[0]:
-            get_image_for_country(final_two_seeds[1],st)
-        with cols[1]:
+            st.subheader("🥈 Second Seed ")
             st.write(final_two_seeds[1])
+        else:
+
+            st.header("3 - Final Results")
+            st.subheader("🥇 First Seed ")
+            cols = st.columns(6)
+            with cols[0]:
+                get_image_for_country(final_two_seeds[0],st)
+            with cols[1]:
+                st.write(final_two_seeds[0])
+
+            st.subheader("🥈 Second Seed ")
+            cols = st.columns(6)
+            with cols[0]:
+                get_image_for_country(final_two_seeds[1],st)
+            with cols[1]:
+                st.write(final_two_seeds[1])
 
 initialize_home_session_state_vars()
 
@@ -172,6 +213,13 @@ for index, row in currently_played_matches.iterrows():
     if(row["AwayTeam"] not in records_dict.keys()):
         records_dict[row["AwayTeam"]] = {"points" : 0, "goals_for" : 0 , "goals_against" : 0, "Group" : row["Group"]}
 
-# tab1, tab2 = st.tabs(["Game Simulator", "Choose Team"])
+tab1, tab2, tab3 = st.tabs(["Game Simulator","Game Schedule", "Choose Team"])
 
-game_pick_format(records_dict)
+with tab1:
+    game_pick_format(records_dict)
+
+with tab2:
+    st.info("Coming soon")
+
+with tab3:
+    st.info("Coming soon")
