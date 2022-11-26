@@ -54,7 +54,7 @@ def get_first_two_seeds(df_of_data):
 
 def game_pick_format(records_dict):
     st.info("Start by selecting a group. After selecting a group, mark the teams you expect to win or simulate a tie by checking both boxes off. All matches already played will be disabled in the simulator. ")
-    
+
     selected_group = st.selectbox("Pick a group",st.session_state.world_cup_data.Group.unique())
 
     if(selected_group is not None):
@@ -119,11 +119,11 @@ def game_pick_format(records_dict):
                 get_image_for_country(row["AwayTeam"],st)
 
             if(disable_bool):
-                records_dict[row["AwayTeam"]]["goals_for"] += row["HomeTeamScore"]
-                records_dict[row["AwayTeam"]]["goals_against"] += row["AwayTeamScore"]
+                records_dict[row["AwayTeam"]]["goals_for"] += row["AwayTeamScore"]
+                records_dict[row["AwayTeam"]]["goals_against"] += row["HomeTeamScore"]
 
-                records_dict[row["HomeTeam"]]["goals_for"] += row["AwayTeamScore"]
-                records_dict[row["HomeTeam"]]["goals_against"] += row["HomeTeamScore"]
+                records_dict[row["HomeTeam"]]["goals_for"] += row["HomeTeamScore"]
+                records_dict[row["HomeTeam"]]["goals_against"] += row["AwayTeamScore"]
 
             if(temp_home_result and temp_away_result):
                 records_dict[row["AwayTeam"]]["points"] += 1
@@ -172,5 +172,6 @@ for index, row in currently_played_matches.iterrows():
     if(row["AwayTeam"] not in records_dict.keys()):
         records_dict[row["AwayTeam"]] = {"points" : 0, "goals_for" : 0 , "goals_against" : 0, "Group" : row["Group"]}
 
+# tab1, tab2 = st.tabs(["Game Simulator", "Choose Team"])
 
 game_pick_format(records_dict)
