@@ -221,7 +221,23 @@ with tab1:
     game_pick_format(records_dict)
 
 with tab2:
-    st.info("Coming soon")
+    with st.expander("Matches Already Played"):
+        for index, row in currently_played_matches.iterrows():
+            template_str = "{0}: {1} {2} against {3}"
+            if(row["HomeTeamScore"] > row["AwayTeamScore"]):
+                join_str = "Wins"
+            elif(row["HomeTeamScore"] < row["AwayTeamScore"]):
+                join_str = "Loses"
+            elif(row["HomeTeamScore"] < row["AwayTeamScore"]):
+                join_str = "Ties"
+
+            template_str = template_str.format(row["Group"], row["HomeTeam"],join_str,row["AwayTeam"])
+            st.write(template_str)
+
+    with st.expander("Matches Still Yet to happen"):
+        for index, row in yet_to_be_played_matches.iterrows():
+            st.write(row["HomeTeam"]," VS ",row["AwayTeam"]," :",row["DateUtc"])
+
 
 with tab3:
     st.info("Coming soon")
