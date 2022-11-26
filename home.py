@@ -53,6 +53,8 @@ def get_first_two_seeds(df_of_data):
     return final_two_seeds
 
 def game_pick_format(records_dict):
+    st.info("Start by selecting a group. After selecting a group, mark the teams you expect to win or simulate a tie by checking both boxes off. All matches already played will be disabled in the simulator. ")
+    
     selected_group = st.selectbox("Pick a group",st.session_state.world_cup_data.Group.unique())
 
     if(selected_group is not None):
