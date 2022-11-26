@@ -42,6 +42,10 @@ def initialize_home_session_state_vars():
 def get_first_two_seeds(df_of_data):
 
     df_of_data["goal_diffrential"] = df_of_data["goals_for"] - df_of_data["goals_against"]
+    warning_string_message = None
+    unique_points_score = len(df_of_data.points.unique())
+    if(unique_points_score <= 3):
+        warning_string_message = "Warning Tie Breaker Detected, this means the final two seeds will be determined by the following tie-breakers. 1) Goal Diffrential, 2) Total Goals, 3) Head to Head Result of tied teams"
 
 
     df_of_data = df_of_data.sort_values(by=['goals_for'], ascending=False)
@@ -54,7 +58,7 @@ def get_first_two_seeds(df_of_data):
 
     final_two_seeds = df_of_data.index.values.tolist()[:2]
 
-    return final_two_seeds
+    return final_two_seeds, warning_string_message
 
 def game_pick_format(records_dict):
     st.info("Start by selecting a group. After selecting a group, mark the teams you expect to win or simulate a tie by checking both boxes off. All matches already played will be disabled in the simulator. ")
@@ -173,7 +177,7 @@ def game_pick_format(records_dict):
 
         final_df_for_group = pd.DataFrame.from_dict(records_dict, orient='index')
         final_df_for_group = final_df_for_group[final_df_for_group.Group == selected_group]
-        final_two_seeds = get_first_two_seeds(final_df_for_group)
+        final_two_seeds, warning_string_message = get_first_two_seeds(final_df_for_group)
 
         if(is_mobile):
             st.header("2 - Final Results")
@@ -197,6 +201,9 @@ def game_pick_format(records_dict):
                 get_image_for_country(final_two_seeds[1],st)
             with cols[1]:
                 st.write(final_two_seeds[1])
+
+        if(warning_string_message is not None):
+            st.warning(warning_string_message)
 
 initialize_home_session_state_vars()
 
