@@ -228,7 +228,7 @@ with tab2:
                 join_str = "Wins"
             elif(row["HomeTeamScore"] < row["AwayTeamScore"]):
                 join_str = "Loses"
-            elif(row["HomeTeamScore"] < row["AwayTeamScore"]):
+            elif(row["HomeTeamScore"] == row["AwayTeamScore"]):
                 join_str = "Ties"
 
             template_str = template_str.format(row["Group"], row["HomeTeam"],join_str,row["AwayTeam"])
