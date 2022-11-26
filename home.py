@@ -118,8 +118,10 @@ def game_pick_format(records_dict):
                 else:
                     rendered_option = [sc1,sc2,sc3]
 
+                dropdown_str = "Pick outcome for "+row["HomeTeam"] + " VS " + row["AwayTeam"]
 
-                temp_game_result = st.selectbox("Pick the games outcome",rendered_option,disabled=disable_bool)
+
+                temp_game_result = st.selectbox(dropdown_str,rendered_option,disabled=disable_bool)
                 if(temp_game_result == sc1):
                     temp_home_result = True
                     temp_away_result = False
