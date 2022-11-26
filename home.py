@@ -8,6 +8,12 @@ ssl._create_default_https_context = ssl._create_unverified_context
 
 WORLD_CUP_DATA = "http://fixturedownload.com/feed/json/fifa-world-cup-2022"
 
+st.set_page_config(
+    page_title="World Cup Group Simulator",
+    page_icon="🏠",
+    layout="centered",
+    initial_sidebar_state="expanded",
+)
 
 # TIE BREAKDER RULES
 # 1 - Goal goal_diffrential
@@ -52,9 +58,13 @@ def game_pick_format(records_dict):
     if(selected_group is not None):
         temp_df = st.session_state.world_cup_data[st.session_state.world_cup_data["Group"] == selected_group]
 
+
+        help_str = "To simulate the team winning simply check the box for the team you expect to win. To simulate a tie check both boxes."
         unique_list_of_teams = []
         counter = 0
         st.header("1 - Game Simulation")
+        cols = st.columns([1,2,1,1,2,1])
+
         for index, row in temp_df.iterrows():
 
             home_win_bool = False
@@ -85,24 +95,23 @@ def game_pick_format(records_dict):
             else:
                 disable_bool = False
 
-            cols = st.columns(6)
 
             with cols[0]:
                 get_image_for_country(row["HomeTeam"],st)
 
             with cols[1]:
-                temp_home_result = st.checkbox(row["HomeTeam"],value=home_win_bool, disabled=disable_bool ,key=str(row["HomeTeam"])+str(row["MatchNumber"]))
+                temp_home_result = st.checkbox(row["HomeTeam"],value=home_win_bool, disabled=disable_bool ,help=help_str, key=str(row["HomeTeam"])+str(row["MatchNumber"]))
 
             with cols[2]:
                 if(disable_bool):
-                    st.write(row["HomeTeamScore"])
+                    st.write(int(row["HomeTeamScore"]))
 
             with cols[3]:
                 if(disable_bool):
-                    st.write(row["AwayTeamScore"])
+                    st.write(int(row["AwayTeamScore"]))
 
             with cols[4]:
-                temp_away_result = st.checkbox(row["AwayTeam"],value=away_win_bool, disabled=disable_bool ,key=str(row["AwayTeam"])+str(row["MatchNumber"]))
+                temp_away_result = st.checkbox(row["AwayTeam"],value=away_win_bool, disabled=disable_bool ,help=help_str, key=str(row["AwayTeam"])+str(row["MatchNumber"]))
 
             with cols[5]:
                 get_image_for_country(row["AwayTeam"],st)
