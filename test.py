@@ -9,25 +9,19 @@ import time
 import fastf1
 import fastf1.plotting
 
-#PLOTTING
+#PLOTTING 
 import plotly.figure_factory as ff
 import plotly.express as px
 from plotly.subplots import make_subplots
-import plotly.graph_objects as go
-
-
-current_path = os.getcwd()
 
 st.set_page_config(
-    page_title="Formula 1 Data App",
-    page_icon="🚗",
-    layout="wide",
+    page_title="Formula 1 One Data App",
+    page_icon="️⚽️",
+    layout="centered",
     initial_sidebar_state="expanded",
 )
 
-st.title("Formula 1 Data Viewer")
-
-TEAM_COLORS ={'Alfa Romeo': '#900000', 'AlphaTauri': '#2b4562', 'Alpine': '#0090ff', 'Aston Martin': '#006f62', 
+TEAM_COLORS ={'alfa romeo': '#900000', 'AlphaTauri': '#2b4562', 'Alpine': '#0090ff', 'Aston Martin': '#006f62', 
             'Ferrari': '#dc0000', 'Haas F1 Team': 'grey', 'McLaren': '#ff8700', 'Mercedes': '#00d2be', 'Red Bull Racing': '#0600ef', 
             'Williams': '#005aff'}
 
@@ -38,13 +32,12 @@ def declare_session_states():
         st.session_state.loaded = False
     if "iteration" not in st.session_state:
         st.session_state.iteration = 0
-
 declare_session_states()
 
-def side_bar_cache_display():
-    st.sidebar.title("Loaded Data Cache")
-    for key in st.session_state.cache:
-        st.sidebar.write(key," : ",st.session_state.cache[key])
+
+st.session_state.iteration += 1
+print("======================")
+print("Iteration ",st.session_state.iteration)
 
 def lap_deviation_for_session_chart(session_laps,render_object=st):
     # DATA FOR DOT PLOT
@@ -81,13 +74,8 @@ def lap_deviation_for_session_chart(session_laps,render_object=st):
                     title="Lap Time Curve",color_discrete_map={"fast": 'green',"avg": 'orange',"slow": 'red'}
                     )
     
-    race_data = st.session_state["cache"]["Session"].results
     temp_order = df["drivers"].unique()
-    print(temp_order)
-
     for driver in temp_order:
-        color_temp = TEAM_COLORS[list(race_data[race_data["Abbreviation"]==driver]["TeamName"].unique())[0]]
-
         y_val = list(temp_order).index(driver)
 
         temp_df = df[df["drivers"]==driver]
@@ -101,7 +89,7 @@ def lap_deviation_for_session_chart(session_laps,render_object=st):
                         x0=temp_res["slow"], 
                         y0=y_val, 
                         x1=temp_res["fast"], 
-                        y1=y_val, line_color=color_temp,opacity=.5)
+                        y1=y_val, line_color="grey",opacity=.5)
 
 
 
@@ -115,6 +103,7 @@ def driver_avg_diff_chart(session_laps,render_object):
     avg_lap_all = session_laps.LapTime.dt.total_seconds().mean()
     avg_laptimes = filter_session_laps.groupby('Driver')['LapTime'].apply(lambda x: x.dt.total_seconds().mean())
     avg_laptimes = avg_laptimes - avg_lap_all
+    print(avg_laptimes)
 
     
     df = pd.DataFrame([])
@@ -162,7 +151,7 @@ def drivers_laptimes(session_laps,render_object):
 
     filter_session_laps = session_laps[session_laps.Driver.isin(st.session_state.cache["drivers"])]
     avg_laptimes = session_laps.groupby('LapNumber')['LapTime'].apply(lambda x: x.dt.total_seconds().mean())
-
+    print(len(avg_laptimes))
     filter_session_laps["LapTimeNum"] = filter_session_laps.LapTime.dt.total_seconds()
     filter_session_laps["Avg Delta"] = filter_session_laps["LapTimeNum"] - avg_laptimes.iloc[:len(filter_session_laps.LapNumber)]
     filter_session_laps['Avg Deltapositive_column'] = filter_session_laps['Avg Delta'].apply(lambda x: x if x > 0 else 0)
@@ -170,6 +159,12 @@ def drivers_laptimes(session_laps,render_object):
 
     filter_session_laps["avg_laptimes"] = avg_laptimes
     filter_session_laps['running_total'] = filter_session_laps.groupby('Driver')['LapTimeNum'].cumsum()
+    print(len(filter_session_laps["LapTimeNum"]))
+
+
+    render_object.write(filter_session_laps.columns)
+    render_object.write(filter_session_laps[["LapTimeNum","running_total","LapNumber","Driver","Compound","Stint","TyreLife"]])
+
 
     subfig = make_subplots(specs=[[{"secondary_y": True}]],x_title="Driver Lap Times")
     subfig2 = make_subplots(specs=[[{"secondary_y": True}]],x_title="Driver Lap Times")
@@ -198,87 +193,7 @@ def drivers_laptimes(session_laps,render_object):
     #     subfig2.add_traces(fig3.data + fig4.data)
     #     subfig2.for_each_trace(lambda t: t.update(line=dict(color=t.marker.color)))
     #     st.plotly_chart(subfig2, theme="streamlit",use_container_width=True)
-
-def position_change_chart(session_results,render_object):
-
-    df = session_results
-    df = df[df.Abbreviation.isin(st.session_state.cache["drivers"])]
-
-
-    df = df.sort_values('Position')
-    df['colors'] = df['TeamName'].map(TEAM_COLORS)
-
-    symbols = ['triangle-left', 'circle-dot', 'square', 'circle']
-
-    fig = px.scatter(df, x="Position", y="Abbreviation", color="TeamName",symbol_sequence = symbols,
-                    title="Lap Time Curve",color_discrete_map=TEAM_COLORS)
-
-    fig.add_trace(go.Scatter(x=df["GridPosition"],y=df["Abbreviation"],mode="markers",
-                             marker=dict(color="white", size=4)))
-    
-
-    temp_order = df["Abbreviation"].unique()
-    print(df["TeamName"].unique())
-    print(temp_order)
-
-    print(df[["DriverNumber","Abbreviation","Position","GridPosition"]])
-
-
-
-    ref_drivers = []
-    for team_i in list(df["TeamName"].unique()):
-        filter_df = df[df["TeamName"]==team_i]
-        ref_drivers += list(filter_df["Abbreviation"].unique())
-
-    print(ref_drivers)
-    
-    for num_i in list(df["DriverNumber"].unique()):
-        temp_start_pos = df["GridPosition"][num_i]
-        temp_end_pos = df["Position"][num_i]
-        temp_color = TEAM_COLORS[df["TeamName"][num_i]]
-        temp_driver =  df["Abbreviation"][num_i]
-        y_val = list(ref_drivers).index(temp_driver)
-
-        print("ADDING LINE")
-        print("DRIVER ",temp_driver," Start ",temp_start_pos, " END ",temp_end_pos, "y val ",y_val)
-
-
-        fig.add_shape(type="line",
-                        x0=temp_start_pos, 
-                        y0=y_val, 
-                        x1=temp_end_pos, 
-                        y1=y_val, line_color=temp_color,opacity=.5)
-    # render_object.write(trace2.to_dict())
-    # fig.add_trace(trace2.to_dict())
-    render_object.plotly_chart(fig, theme="streamlit",use_container_width=True)
-    
-
-
-
-def event_standings_overview(render_object):
-    temp_session = st.session_state.cache["Session"]
-    render_object.title(temp_session)
-
-    cols = render_object.columns([1,2,2])
-
-    with cols[0]:
-        st.header("Final Results")
-        for driver_number in list(temp_session.results.DriverNumber.unique()):
-            temp_driver = temp_session.results["Abbreviation"][driver_number]
-            temp_team = temp_session.results["TeamName"][driver_number]
-
-            temp_position = temp_session.results["Position"][driver_number]
-            temp_grid_start = temp_session.results["GridPosition"][driver_number]
-            temp_change = temp_grid_start - temp_position
-
-            st.write(temp_driver," ",temp_grid_start," --> ",temp_position, "(",temp_change,")")
-
-    st.write(temp_session.results)
-    position_change_chart(temp_session.results,render_object)
-
-
-
-           
+            
 def session_dashboard():
     year_selector, track_and_type, driver_lap_select, view_data = st.tabs(["📅 Year", "🏁 Track","🏎️ Driver(s)","🔍 Session Control"])
 
@@ -302,48 +217,34 @@ def session_dashboard():
 
     with driver_lap_select:
         if("Session" in st.session_state.cache):
-            selected_teams = st.multiselect("Select Drivers by team",st.session_state.cache["Session"].laps.Team.unique(),default=st.session_state.cache["teams"])
             drivers = st.multiselect("Driver Select",st.session_state.cache["Session"].laps.Driver.unique(),default=st.session_state.cache["drivers"])
             if st.button("Update driver selection"):
                 st.session_state.cache["drivers"] = drivers
-                st.experimental_rerun()
-
-            if st.button("Update driver selection by team"):
-                temp_df = st.session_state.cache["Session"].laps
-                temp_df = temp_df[temp_df['Team'].isin(selected_teams)]
-                st.session_state.cache["drivers"] = temp_df.Driver.unique()
-                st.session_state.cache["teams"] = selected_teams
-                st.experimental_rerun()
-
-
         else:
             st.warning("Load a session in the view data section")
 
 
     with view_data:
-
-        cols = st.columns(2)
-
-        if cols[0].button("New Session Load"):
+        if st.button("New Session Load"):
             st.session_state.cache={}
             st.experimental_rerun()
 
         if("Track" in st.session_state.cache):
             # IF SESSION NOT LOADED YET
             if("Session" not in st.session_state.cache):
-                if(cols[1].button("Load Data")):
+                if(st.button("Load Data")):
                     temp_session = fastf1.get_session(st.session_state.cache["Year"],st.session_state.cache["Track"],st.session_state.cache["Type"])
                     with st.spinner():
                         temp_session.load()
                         st.session_state.cache["Session"] = temp_session
                         st.session_state.cache["drivers"] = st.session_state.cache["Session"].laps.Driver.unique()
-                        st.session_state.cache["teams"] = st.session_state.cache["Session"].laps.Team.unique()
                         st.session_state.cache["SessionLaps"] = temp_session.laps
                         st.session_state.cache["SessionLaps"]["LapTimeNum"] = st.session_state.cache["SessionLaps"].LapTime.dt.total_seconds()
                         st.session_state.cache["SessionLaps"]["TotalLapTimeNum"] = st.session_state.cache["SessionLaps"].Time.dt.total_seconds()
 
                         st.session_state.cache["SessionLaps"] = st.session_state.cache["SessionLaps"].sort_values(['LapNumber', 'TotalLapTimeNum'])
 
+                        # Calculate position at the start of the lap
 
                         # Calculate position at the end of the lap
                         st.session_state.cache["SessionLaps"]['position_end'] = st.session_state.cache["SessionLaps"].groupby('LapNumber')['TotalLapTimeNum'].rank().astype(int)
@@ -353,7 +254,8 @@ def session_dashboard():
 
                         # Calculate gap to the driver in first
                         st.session_state.cache["SessionLaps"]['gap_to_first'] = st.session_state.cache["SessionLaps"].groupby('LapNumber')['TotalLapTimeNum'].transform(lambda x: x - x.min())
-                    st.experimental_rerun()
+
+                        print(st.session_state.cache["SessionLaps"][["LapNumber","Driver","TotalLapTimeNum","position_end","gap_to_front","gap_to_first"]])
 
 
             else:
@@ -390,17 +292,17 @@ def session_dashboard():
             # TRACK AND TYPE INPUT NEEDED
             st.write("Select a track and type in the previous step")
 
-
-st.session_state.iteration += 1
-print("======================")
-print("Iteration ",st.session_state.iteration)
-
-
+def side_bar_cache_display():
+    for key in st.session_state.cache:
+        st.sidebar.write(key," : ",st.session_state.cache[key])
 
 
 session_dashboard()
-
 side_bar_cache_display()
 
-if("Session" in st.session_state.cache):
-    event_standings_overview(st)
+
+if st.button("Refresg"):
+    print("refreeesh")
+
+
+st.write(st.session_state)
